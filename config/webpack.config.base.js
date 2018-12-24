@@ -3,21 +3,50 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 
+const resolve = (dir) => {
+   return path.resolve(__dirname,dir);
+}
+
 module.exports = {
-  entry: path.resolve(__dirname, '../index.js'),
+  entry: [resolve('../index.ts'),resolve('../src/styles/index.scss')],
   devtool: 'cheap-eval-source-map',
   output: {
     path: '/build',
     filename: 'bundle.js'
   },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx']
+  },
   module: {
     // exprContextCritical: false,
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {}
+          },
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'sass-loader'
+          }
+        ]
+      }
+    ]
   },
   plugins: [
     new htmlWebpackPlugin({
       title: '首页',
       filename: 'index.html',
-      template: path.resolve(__dirname, '../index.html'), 
+      template: path.resolve(__dirname, '../index.html'),
       inject: 'head',
       // favicon: path.resolve(__dirname, 'favicon.icon'),
       minify: true,
